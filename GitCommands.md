@@ -86,6 +86,49 @@ Then  we can use the below custom command
 
     git loggraph
 
+**Git amending one of the commits**
+
+1. Start the interactive Rebase until or one below commits (for the below done for one commit before)
+
+    `git rebase -i HEAD~3 `
+
+    It opens a editor with 3 commit hashes with `pick` 
+
+        pick 18627eb 1st commit
+        pick 121a66a 2nd commit
+        pick dae18d0 3rd commit
+
+
+
+    then we need to change the `pick` → `edit` for the commit which we wanted to modify then save and close the editor.
+
+        pick 18627eb 1st commit
+        edit 121a66a 2nd commit
+        pick dae18d0 3rd commit
+
+
+
+2. Do the necessary modification which we wanted to do for the files
+
+    `git add -u (or)`
+    `git add .`
+
+3.  Then proceed with amending the commit
+    
+    `git commit --amend`
+
+    This opens your editor to amend the commit message. 
+4. Continue Rebase for applying the other commits
+
+    `git rebase --continue`
+    Then it opens the Apllying the remaining commits until it finishes the rebase.
+5. Push the final changes..... Done!!
+
+
+
+test
+
+
 <pre>
 Code block for testing
 
