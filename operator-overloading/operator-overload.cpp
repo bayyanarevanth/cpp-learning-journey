@@ -116,17 +116,11 @@ StringOperations StringOperations::operator-() const
     return temp;
 }
 
-StringOperations StringOperations::operator++() const
+StringOperations& StringOperations::operator++()
 {
-    char* buff= new char[std::strlen(this->strmem) + 1];
-    std::strcpy(buff, strmem);
-    for (size_t i=0; i< std::strlen(buff); i++)
-        buff[i] = std::toupper(buff[i]);
-    char str[strlen(buff)];
-    strcpy(str,buff);
-    StringOperations temp {str};
-    delete [] buff;
-    return temp;
+    for (size_t i=0; i< std::strlen(strmem); i++)
+        strmem[i] = std::toupper(strmem[i]);
+    return *this;
 }
 
 StringOperations StringOperations::operator+(const StringOperations& rhs) const

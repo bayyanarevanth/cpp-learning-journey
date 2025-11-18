@@ -95,6 +95,7 @@ int main()
     cout << result << endl;           // FRANK
     
     s = "Frank";
+    cout << s << endl;                  //"Frank"
     ++s;
     cout << s << endl;                  // FRANK
     

@@ -35,7 +35,7 @@ public:
     StringOperations& operator=(StringOperations&&) noexcept;                              // Default move assignment - Stealing the data
     StringOperations& operator=(const StringOperations&);               // Default assignment operator
     StringOperations operator-() const;
-    StringOperations operator++() const;
+    StringOperations& operator++();
     StringOperations operator+(const StringOperations&) const;
     StringOperations operator*(int) const;
     StringOperations& operator+=(const StringOperations&);
