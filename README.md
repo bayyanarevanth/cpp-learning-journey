@@ -54,40 +54,51 @@ A **copy constructor** is a special constructor that creates a new object as a *
 The copy-constructor is same as normal constructor with same object as input argument<br>
 If a copy constructor is not created by class.h then compiler will create its own copy constructor **which is shallow copy constructor**.
 
-#### Shallow copy (Object creation with L-Value reference)
+#### Shallow copy (Object creation with L-Value reference or [_Copy from another object_])
 Shallow copy is copying just each member of source object<br>
 If a pointer is present in the members of class then it just copy the address from source<br> 
 Therefore it will keep the address, and if the address is freed by destructor or by some means<br>
 still the copied member points the address which causes issues later, program might crash also.
 
+```c++
+StringOperations(const StringOperations& rhs)
+```
 
+```c++
     int main() {
     
-        Shallow obj1 {100};        <-- calls constructor and creates the members for this obj1 and initializes the values
+        Shallow obj1 {100};        //<-- calls constructor and creates the members for this obj1 and initializes the values
         // Problem1: Destructor will delete the memory address and creates a dangling pointer issue 
-        display_shallow(obj1);      <-- calls copy constructor --> if the copy done shallow by just member copy <br>
-                                        --> perform the instructions in code --> destruct the copied object and <br>
-                                        delete the members of copied object (if original pointer contains the address then <br>
-                                        that address will be deleted now) --> leaves the code and comes back to main 
+        display_shallow(obj1);      //<-- calls copy constructor --> if the copy done shallow by just member copy <br>
+                                    //    --> perform the instructions in code --> destruct the copied object and <br>
+                                    //    delete the members of copied object (if original pointer contains the address then <br>
+                                    //    that address will be deleted now) --> leaves the code and comes back to main 
         // Problem2: modifying one element effects other object value
-        Shallow obj2 {obj1};      <-- calls constructor and creates the members for this obj2 
-                                            and copies the member values form obj1 which is invalid as it was deleted before
-        obj2.set_data_value(1000);  <-- Set the value to the member as 1000 (in this case pointer is copied from obj1 to obj2 
-                                        both points to the same address) --> then both obj1 and obj2 members will sets to 1000
+        Shallow obj2 {obj1};      //<-- calls constructor and creates the members for this obj2 
+                                  //          and copies the member values form obj1 which is invalid as it was deleted before
+        obj2.set_data_value(1000);//  <-- Set the value to the member as 1000 (in this case pointer is copied from obj1 to obj2 
+                                  //      both points to the same address) --> then both obj1 and obj2 members will sets to 1000
         
         return 0;
-    }                               <-- First object Destructor calls the , which deletes the already deleted memory<br>
-                                            --> If it goes further then Destruction of second object <br>
-                                                    it will further delete again the same invalid memory location<br>
-#### Deep copy (Object creation with _L-Value_ reference)
+    }                               //<-- First object Destructor calls the , which deletes the already deleted memory<br>
+                                    //        --> If it goes further then Destruction of second object <br>
+                                    //                it will further delete again the same invalid memory location<br>
+```                                                    
+#### Deep copy (Object creation with _L-Value_ reference or [_Copy from another object_])
 
-In deep copy to compensate the memory issue every time we **create a new heap storage while copying or while constructing new object.<br>
+In deep copy to compensate the memory issue every time we **create a new heap storage while copying to or while constructing new object.**<br>
 Therefore, while deleting we don't need to bother about the pointing source as we create a dedicated pointer before copying.<br>
 **In short: Allocate a new storage and copy the data**
+```c++
+StringOperations(const StringOperations& rhs)
+```
+#### Move Constructor (Object creation with _R-Value_ reference or [_Construct from temporary_])
 
-#### Move Constructor (Object creation with _R-Value_ reference)
-
+This is used to `Construct from temporary`
 The constructor which is created for object creation for the R-Value initializations.<br>
+```c++ 
+StringOperations(StringOperations&& rhs)
+```
 
 ### _this_ Pointer
 
