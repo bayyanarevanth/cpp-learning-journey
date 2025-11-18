@@ -3,33 +3,15 @@
 #include "additional.hpp"
 
 using namespace std;
+//#define OBJ_CLASS_CHALLENG
+//#define OPER_OVERLOADING
+
 
 int main()
 {
 
-    // Movies my_movies;
-    // cout<<"Hello World!"<<endl;
-    // my_movies.display_all_movies();
 
-    // add_movie(my_movies, "Big", "PG-13",2);                 // OK
-    // add_movie(my_movies,"Star Wars", "PG",5);             // OK
-    // add_movie(my_movies,"Cinderella", "PG",7);           // OK
-
-    // my_movies.display_all_movies();   // Big, Star Wars, Cinderella
-
-    // add_movie(my_movies,"Cinderella", "PG",7);            // Already exists
-    // add_movie(my_movies,"Ice Age", "PG",12);              // OK
-
-    // my_movies.display_all_movies();    // Big, Star Wars, Cinderella, Ice Age
-    // cout<< my_movies.increment_watched("Cinderella"); 
-
-    // increment_watched(my_movies,"Big");                    // OK
-    // increment_watched(my_movies,"Ice Age");              // OK
-
-    // my_movies.display_all_movies();    // Big and Ice Age watched count incremented by 1
-
-    // increment_watched(my_movies,"XXX");         // XXX not found
-
+#ifdef OPER_OVERLOADING
     cout << boolalpha << endl;
     StringOperations a {"Franka"};
     StringOperations b {"Frank"};
@@ -104,6 +86,32 @@ int main()
     result = ++s;
     cout << s << endl;                  // FRANK
     cout << result << endl;           // frank */
+#endif
+
+#ifdef OBJ_CLASS_CHALLENG
+    Movies my_movies;
+    cout<<"Hello World!"<<endl;
+    my_movies.display_all_movies();
+
+    add_movie(my_movies, "Big", "PG-13",2);                 // OK
+    add_movie(my_movies,"Star Wars", "PG",5);             // OK
+    add_movie(my_movies,"Cinderella", "PG",7);           // OK
+
+    my_movies.display_all_movies();   // Big, Star Wars, Cinderella
+
+    add_movie(my_movies,"Cinderella", "PG",7);            // Already exists
+    add_movie(my_movies,"Ice Age", "PG",12);              // OK
+
+    my_movies.display_all_movies();    // Big, Star Wars, Cinderella, Ice Age
+    cout<< my_movies.increment_watched("Cinderella");
+
+    increment_watched(my_movies,"Big");                    // OK
+    increment_watched(my_movies,"Ice Age");              // OK
+
+    my_movies.display_all_movies();    // Big and Ice Age watched count incremented by 1
+
+    increment_watched(my_movies,"XXX");         // XXX not found
+#endif
     return 0;
 }
 
