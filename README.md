@@ -167,4 +167,71 @@ Move constructor for _R-Value_ reference<br>
 > after copying we will derefence the pointer(s) to `nullptr` <br>
 
 
+## Inheritance 
 
+```c++
+class Base {
+// Base class members . . .
+};
+class Derived: <access-specifier> Base {
+// Derived class members . . .
+};
+```
+access-specifier: public, protected, private
+
+public
+•Most common
+•Establishes ‘is-a’ relationship between Derived and Base classes
+
+**Inheritance**
+```c++
+class Base {
+public:
+    void foo() { }
+};
+
+class Derived : private Base {   // private inheritance
+public:
+    void callFoo() {
+        foo();  // allowed internally
+    }
+};
+
+int main() {
+    Derived d;
+    // d.foo();   // ❌ error: foo() is private in Derived
+    d.callFoo(); // ✅ works
+}
+```
+
+**Composition**
+```c++
+class Base {
+public:
+    void foo() { }
+};
+
+class Wrapper {
+private:
+    Base b;    // composition: has-a
+
+public:
+    void callFoo() {
+        b.foo();   // call through contained object
+    }
+};
+
+int main() {
+    Wrapper w;
+    // w.foo();   // ❌ error: no inheritance
+    w.callFoo(); // ✅ works
+}
+```
+
+
+
+- the IS-a relation between two classes 
+- If a derived class doesn't initialize the base class with the ini, 
+
+- Construction of base class members to be done explicitly in the derived class definition otherwise
+constructor will be called instead while creating the derived object

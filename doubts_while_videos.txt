@@ -1,0 +1,4 @@
+Inheritance
+    - public :scope of the udemy course but private and protected: is out of the scope of the Udemy course
+        Needs to study the private and protected inheritance
+

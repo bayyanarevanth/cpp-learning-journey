@@ -12,4 +12,6 @@ add_executable(cpp_project main/main.cpp
         operator-overloading/operator-overload.cpp
         operator-overloading/operator-overload.hpp
         main/additional.cpp
-        main/additional.hpp)
+        main/additional.hpp
+        inheritance/inheritance.cpp
+        inheritance/inheritance.hpp)
