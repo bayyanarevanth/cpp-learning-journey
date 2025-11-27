@@ -24,4 +24,7 @@ add_executable(cpp_project main/main.cpp
         inheritance/Checking_Account.cpp
         inheritance/Checking_Account.hpp
         inheritance/Trust_Account.cpp
-        inheritance/Trust_Account.hpp)
+        inheritance/Trust_Account.hpp
+        strings/strings_assignment.hpp
+        strings/strings_assignment.cpp
+        strings/temporary.cpp)
