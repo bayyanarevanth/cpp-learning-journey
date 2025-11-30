@@ -5,20 +5,26 @@ Logging my past and current learnings placing here
 
  **The #define inclusions tips to avoid multiple inclusions by compiler as below** 
 
-
+```c++
     #ifndef _AAAAA_H_
     #define _AAAAA_H_
 
 
     #endif
-
+```
 **(or)**
-
+```c++
     #pragme once  [Needs to check the compiler support]
-
+```
 # Functions
 ```c++
-Checking_Account(const char* name = def_name, double balance = def_balance) 
+// Declartion of function in header file
+// Put default arguments only in the class declaration (header file).
+// Because callers see the header; the .cpp file is hidden.
+Checking_Account(const char* name = def_name, double balance = def_balance)
+
+// defintion of function
+Checking_Account(const char* name, double balance) 
 {
     // Some statements
 }
@@ -26,6 +32,7 @@ Checking_Account(const char* name = def_name, double balance = def_balance)
 in this case you can call function with different ways as below
 
 ```c++
+// calling the function
 Checking_Account();                // uses both defaults
 Checking_Account("Kirk");          // name="Kirk", balance=def_balance
 Checking_Account("Kirk", 500.0);   // both provided
@@ -240,6 +247,23 @@ Mystring &operator=(Mystring &&rhs)            // Move assignment
 | protected  | ✔️          | ✔️             | ❌             |
 | public     | ✔️          | ✔️             | ✔️            |
 
+**Example syntax**
+```c++
+
+class Base
+{
+    private:
+        int a;
+    public:
+        methods();
+};
+
+class Dervied: public Base1, private Base2, protected Base3
+{
+    // Members of NewClass
+};
+```
+
 ```c++
 class Base {
 private:
@@ -268,8 +292,7 @@ int main() {
 }
 ```
 
-
-General Syntax for the 
+**Example syntax** 
 
 ```c++
 class Base {
@@ -449,10 +472,10 @@ Polymorphism is in short as below <br>
 `<Base Class> *prt = new <Derived Class>`
 
 ```c++
-    Account *p1 = new Account();
-    Account *p2 = new Savings();
-    Account *p3 = new Checking();
-    Account *p4 = new Trust();
+    Account *p1 = new Account();     // p1 is variable on stack and it points to an Account type object created on heap
+    Account *p2 = new Savings();     // p2 is variable on stack and it points to an Savings type object created on heap
+    Account *p3 = new Checking();    // p3 is variable on stack and it points to an Checking type object created on heap
+    Account *p4 = new Trust();       // p4 is variable on stack and it points to an Trust type object created on heap
 ```
 
 
@@ -527,7 +550,7 @@ By using the base class references, polymorphism works as below
 ```
 
 **Abstract Base Class**
-Abstract Class are the classes 
+Abstract Class are the classes
 - Cannot instantiate objects
 - These classes are used as base classes in inheritance hierarchies 
 - Often referred to as Abstract Base Classes
@@ -584,3 +607,247 @@ public:
 };
 
 ```
+
+>1. Virtual destructors are crucial for properly destroying derived class objects when they are referred to by base class pointers.
+>2. Polymorphism enables objects of derived classes to be treated as objects of a base class, enhancing flexibility in code.
+>3. Inheritance enables derived classes to modify or extend the behaviors defined in base classes, which is a core aspect of polymorphism.
+>4. Upcasting is a safe and common practice in C++ to use a derived class object where a base class object is expected. 
+>(“Using a derived class where a base is expected” = passing a child class to something written for the parent class.)
+>5. Virtual functions are used to achieve polymorphism, allowing derived classes to provide specific behavior while using the same interface.
+```c++
+//1: Function expects a Base, you pass a Derived
+class Character {
+public:
+    virtual void attack() = 0;
+};
+
+class Warrior : public Character {
+public:
+    void attack() override { /* ... */ }
+};
+
+void fight(Character* c) {   // expects Base pointer
+    c->attack();
+}
+
+Warrior w;
+fight(&w);   // passing Derived object where Base is expected (upcast)
+
+//2: Storing derived objects in a container of base pointers
+std::vector<Character*> chars;
+
+Warrior w;
+Sorcerer s;
+
+chars.push_back(&w);  // Derived → Base
+chars.push_back(&s);  // Derived → Base
+```
+
+**Upcasting (safe)**
+
+Casting Derived → Base.
+Happens automatically and is always safe.
+```c++
+Derived d;
+Base* b = &d;        // upcast (implicit)
+```
+Why safe?
+Every Derived is-a Base; no information is lost (except access to derived-specific stuff).
+
+**Downcasting (dangerous)**
+
+Casting Base → Derived.
+Needs an explicit cast and is unsafe unless verified.
+```c++
+Base* b = new Derived;
+Derived* d = dynamic_cast<Derived*>(b);  // safe check
+```
+
+If b does not actually point to a Derived,
+dynamic_cast returns nullptr (for pointers).
+
+⚠️ Why dangerous?
+
+Because the base pointer might actually point to:
+
+- another derived type
+- or not be polymorphic 
+- or not match the type you expect
+
+Using `static_cast` for downcasting does not check anything → undefined behavior if wrong.
+
+**Polymorphism rule of thumb**<br>
+- Use upcasting for polymorphic containers (std::vector<Base*>).
+- Use downcasting rarely, only when you truly need derived-specific behavior.
+
+
+| Cast                           | Safe?        | When to use                                                  |
+|--------------------------------|--------------|--------------------------------------------------------------|
+| **Upcast (Derived → Base)**    | ✔️ Always    | Allowed, but implicit cast is enough                         |
+| **Downcast (Base → Derived)**  | ❌ Dangerous  | Only if *guaranteed* correct; otherwise use `dynamic_cast`   |
+
+
+```c++
+class Animal {
+public:
+int age;
+};
+
+class Dog : public Animal {
+public:
+int barkPower;
+};
+```
+
+A Dog has two parts:
+[ Animal part ] & [ Dog part ]
+
+An Animal object has only:
+[ Animal part ]
+
+**Upcasting**
+```c++
+Dog d;
+Animal* a = &d;   // upcast
+```
+```shell 
+#Dog in memory
++-------------+
+| age         |  <-- Animal part
++-------------+
+| barkPower   |  <-- Dog part
++-------------+
+
+Animal* a  → looks only at [age]
+```
+
+**Downcasting**
+```c++
+Animal an;
+Dog* d = static_cast<Dog*>(&an); // ❌ dangerous
+
++-------------+
+| age         |  <-- Animal part only
++-------------+
+this means
++-------------+
+| age         |
++-------------+
+| barkPower   |  <-- does NOT exist!
++-------------+
+
+d->barkPower = 10;  → You write memory that is not part of the Animal object → corruption → crash.
+```
+
+
+Some Dangerous downcasting Issue
+```c++
+int main() {
+  Animal* animalPtr = new Cat();
+
+  Cat* catPtr = dynamic_cast<Cat*>(animalPtr);  
+
+  if (catPtr != nullptr) {
+    catPtr->sound();
+    catPtr->scratch();
+  } else {
+    cout << "Downcasting failed!" << endl;
+  }
+
+  delete animalPtr;
+  return 0;
+}
+```
+
+Definition and Declaration of variables<br>
+✔️ Allowed in header:
+```c++
+static const int def_health = 100;
+static const int def_power = 10;
+```
+❌ Not allowed in header:
+```c++
+static const std::string def_name = "Elden King";
+// this requires a definition in cpp file
+```
+
+RAII : Resource Allocation Is Initialisation (Smart Pointers)
+- Common idiom or pattern used in software design based on container object lifetime
+- RAII objects are allocated on the stack
+- Resource Acquisition
+  - Open a ﬁle
+  - Allocate memory
+  - Acquire a lock
+- Is Initialization
+  - The resource is acquired in a constructor
+- Resource relinquishing
+  - Happens in the destructor
+  - Close the ﬁle
+  - Deallocate the memory
+  - Release the lock
+
+
+Unique Pointer
+
+Most recomended Pointer type in general coding
+
+**Shared pointer<br>**
+
+`p1.use_count()` will give the number of shared pointers<br>
+`p1.reset()` will be used to reset the use counter<br>
+
+
+
+```c++
+    // Sample code shared between normal and vector of pointers 
+    std::cout << "\n==========================================" << std::endl;
+    std::shared_ptr<Account> acc1 = std::make_shared<Trust_Account>("Larry", 10000, 3.1);
+    std::shared_ptr<Account> acc2 = std::make_shared<Checking_Account>("Moe", 5000);
+    std::shared_ptr<Account> acc3 = std::make_shared<Savings_Account>("Curly", 6000);
+    
+    std::vector<std::shared_ptr<Account>> accounts;
+    accounts.push_back(acc1);   // one shared copy for acc1 and vector second copy.
+    accounts.push_back(acc2);
+    accounts.push_back(acc3);
+    
+    for (const auto &acc: accounts) {
+        std::cout << *acc << std::endl;
+        // here the pointer is shared beween acc1 and vector of pinters therefore use count : 2
+        std::cout << "Use count: " << acc.use_count() << std::endl;
+    }
+```
+
+Problem of circular pointer using the Shared pointer
+<img src="/smart_pointers/sharedpointer_problem.png" width="60%" alt="">
+
+```c++
+
+int main() {
+    shared_ptr<A> a  = make_shared<A>();
+    shared_ptr<B> b = make_shared<B>();
+    a->set_B(b);    // metod to make shared pointer pointed to B
+    b->set_A(a);    // metod to make shared pointer pointed to A
+    
+    return 0;
+}
+
+```
+<img src="/smart_pointers/output_display.png" width="60%" alt="">
+
+Because of 1 reference available in both A and B destrctor will never call therefore memory leak happens.
+<br> To compensate this one of the class will be defined with the weak pointer
+
+```c++
+class B {
+    std::weak_ptr<A> a_ptr;     // make weak to break the strong circular reference
+public:
+    void set_A(std::shared_ptr<A> &a) {
+        a_ptr = a;
+    }
+    B() { cout << "B Constructor" << endl; }
+    ~B() { cout << "B Destructor" << endl; }
+};
+```
+
+
+
